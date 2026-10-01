@@ -3,78 +3,230 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Mi observatorio de datos</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23e8590c%27/%3E%3C/svg%3E">
-<meta name="description" content="Observatorio de datos públicos construido con la plantilla de IAcademy.">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<title>Radar del BOE · Todo lo que se publicó en 2025, en datos</title>
+<meta name="description" content="75.405 documentos publicó el Boletín Oficial del Estado en 2025, 240 al día. Pero las normas que cambian las cosas son 3.728: el 4,9 %. Buscador y desglose con datos oficiales del BOE.">
+<meta property="og:title" content="Radar del BOE · 75.405 documentos en 2025">
+<meta property="og:description" content="El 95 % del BOE son anuncios, oposiciones y justicia. Las normas de rango general son el 4,9 %. Míralo todo buscable.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%237a1f2b%27/%3E%3C/svg%3E">
 <style>
-  :root { --bg: #f5f6f4; --paper: #fff; --ink: #1b1f24; --ink-2: #555f6a; --line: #d9ddd6; --accent: #e8590c;
-          --c1: #fde9d9; --c2: #f9b98a; --c3: #f08a4b; --c4: #d9480f; --c5: #8a2b06; color-scheme: light; }
-  @media (prefers-color-scheme: dark) { :root { --bg: #121417; --paper: #1b1e22; --ink: #eceef0; --ink-2: #a5adb6; --line: #2d3238; color-scheme: dark; } }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
-  h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.1; margin: 8px 0 8px; }
-  .lede { color: var(--ink-2); max-width: 65ch; }
-  .grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; margin-top: 20px; }
-  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
-  #map { height: 480px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); }
-  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: .92rem; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; }
-  td.r, th.r { text-align: right; }
-  th { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); cursor: pointer; }
-  .fuente { font-size: .85rem; color: var(--ink-2); margin-top: 16px; }
-  .kpi { font-size: 2.4rem; font-weight: 800; }
-  a { color: var(--accent); }
+  :root { --bg:#f6f4f1; --paper:#fff; --ink:#1c1a19; --ink-2:#605a55; --line:#ded8d1; --accent:#7a1f2b;
+          --bar:#b98b52; --bar-hi:#7a1f2b; color-scheme: light; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141211; --paper:#1c1917; --ink:#f0ece8; --ink-2:#a89f97; --line:#332e2a; --accent:#e8838f; --bar:#8a6a3e; --bar-hi:#e8838f; color-scheme: dark; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
+  h1 { font-size:clamp(1.9rem,4vw,3rem); line-height:1.08; margin:10px 0; letter-spacing:-.02em; }
+  h2 { font-size:1.35rem; margin:38px 0 6px; }
+  .lede { color:var(--ink-2); max-width:66ch; font-size:1.05rem; }
+  .eyebrow { font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); font-weight:700; margin:0; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:26px 0 10px; }
+  .kpi { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .kpi b { display:block; font-size:2rem; font-weight:800; line-height:1.1; font-variant-numeric:tabular-nums; }
+  .kpi span { color:var(--ink-2); font-size:.9rem; }
+  .card { background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:16px; overflow-x:auto; margin-top:12px; }
+  .aviso { border-left:3px solid var(--accent); padding:10px 14px; background:var(--paper); border-radius:0 8px 8px 0; margin:18px 0; }
+  .nota { font-size:.87rem; color:var(--ink-2); margin-top:10px; }
+  a { color:var(--accent); }
+  svg { width:100%; height:auto; display:block; }
+  input { font:inherit; padding:9px 13px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink); width:100%; max-width:520px; }
+  select { font:inherit; padding:7px 10px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink); }
+  table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.9rem; }
+  th,td { padding:7px 9px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  td.r, th.r { text-align:right; }
+  th { font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-2); }
+  .pill { display:inline-block; padding:1px 8px; border-radius:999px; font-size:.74rem; font-weight:700; background:var(--accent); color:#fff; }
+  .pill.muted { background:transparent; color:var(--ink-2); border:1px solid var(--line); }
+  .bar { position:relative; }
+  .bar i { position:absolute; inset:0 auto 0 0; background:var(--bar); opacity:.35; border-radius:3px; }
+  .bar span { position:relative; }
+  footer { margin-top:44px; border-top:1px solid var(--line); padding-top:16px; font-size:.87rem; color:var(--ink-2); }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <p class="fuente">Plantilla de observatorio de datos · <a href="https://iacedemy.com/free/yt/construido-con-ia/">IAcademy</a></p>
-  <h1 id="titulo">Cargando…</h1>
-  <p class="lede">Ejemplo incluido en la plantilla: el dato se descarga cada día de la API del INE con GitHub Actions y se publica en GitHub Pages. Cámbialo por tu propia pregunta (ver README).</p>
-  <div class="kpi" id="kpi"></div>
-  <div class="grid">
-    <div id="map" role="region" aria-label="Mapa por comunidad autónoma"></div>
-    <div class="card"><table id="tabla"></table></div>
+<div class="wrap">
+  <p class="eyebrow">Construido con IA · IAcademy</p>
+  <h1>Radar del BOE</h1>
+  <p class="lede">El Boletín Oficial del Estado publicó <strong>75.405 documentos en 2025</strong>: 240 cada día que hubo boletín. Aquí está todo el año, descargado de la API oficial de datos abiertos del BOE, desglosado y buscable. Lo primero que se aprende es que casi nada de eso son leyes.</p>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="aviso">
+    <strong>Esto no es asesoría legal.</strong> Se describe lo que publica el BOE, sin interpretarlo. Cada fila enlaza al texto oficial para que puedas leerlo tú. Los temas se asignan con reglas de palabras clave sobre el título (audibles en <code>scripts/reglas_tema.json</code>), así que <span id="sincl"></span> quedan sin clasificar: no se inventa una categoría para rellenar.
   </div>
-  <p class="fuente" id="fuente"></p>
-</main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script>
-const nf = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 0, useGrouping: "always" });
-const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-(async () => {
-  const [D, geo] = await Promise.all([fetch("data.json").then((r) => r.json()), fetch("ccaa.geojson").then((r) => r.json())]);
-  document.getElementById("titulo").textContent = `${D.titulo} (${D.periodo})`;
-  document.getElementById("kpi").textContent = `España: ${nf.format(D.datos.ES.valor)} ${D.unidad}`;
-  document.getElementById("fuente").innerHTML = `Fuente: <a href="${esc(D.fuente.url_web)}">${esc(D.fuente.nombre)}</a> · ${esc(D.fuente.licencia)} · descargado el ${esc(D.descargado)}`;
 
-  // Escala por cuantiles en 5 clases
-  const vals = Object.entries(D.datos).filter(([k]) => k !== "ES").map(([, d]) => d.valor).sort((a, b) => a - b);
-  const cortes = [1, 2, 3, 4].map((i) => vals[Math.floor((i * vals.length) / 5)]);
-  const clase = (v) => cortes.filter((c) => v >= c).length + 1;
-  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  <h2>Qué es realmente el BOE</h2>
+  <div class="card"><svg id="g-secciones" role="img" aria-label="Reparto por sección del BOE"></svg></div>
+  <p class="nota">Las secciones del BOE: I disposiciones generales (las normas), II autoridades y personal (nombramientos y oposiciones), III otras disposiciones, IV Administración de Justicia y V anuncios. La sección I, donde viven las leyes y los reales decretos, es <strong id="pctI"></strong> del total.</p>
 
-  const map = L.map("map", { scrollWheelZoom: false }).fitBounds([[35.9, -9.4], [43.8, 4.4]]);
-  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-    { attribution: "Teselas © Esri, HERE, Garmin, © OpenStreetMap", maxNativeZoom: 16 }).addTo(map);
-  L.geoJSON(geo, {
-    style: (f) => { const d = D.datos[f.properties.code]; return { fillColor: d ? css(`--c${clase(d.valor)}`) : "#ccc", fillOpacity: .85, color: "#fff", weight: 1 }; },
-    onEachFeature: (f, l) => { const d = D.datos[f.properties.code]; l.bindTooltip(`${esc(f.properties.name)}<br>${d ? nf.format(d.valor) + " " + D.unidad : "Sin dato"}`, { sticky: true }); },
-  }).addTo(map);
+  <h2>Cuántas normas de verdad</h2>
+  <div class="kpis" id="normas-kpis"></div>
+  <p class="nota" id="normas-nota"></p>
 
-  // Tabla ordenable
-  let clave = "valor", dir = -1;
-  const filas = Object.entries(D.datos).filter(([k]) => k !== "ES").map(([, d]) => d);
-  const pintar = () => {
-    const ord = [...filas].sort((a, b) => (typeof a[clave] === "string" ? a[clave].localeCompare(b[clave], "es") : (a[clave] ?? -1e9) - (b[clave] ?? -1e9)) * dir);
-    document.getElementById("tabla").innerHTML = `<thead><tr><th data-k="nombre">Comunidad</th><th class="r" data-k="valor">${esc(D.unidad)}</th><th class="r" data-k="variacion">Interanual</th></tr></thead><tbody>${ord.map((d) => `<tr><td>${esc(d.nombre)}</td><td class="r">${nf.format(d.valor)}</td><td class="r">${d.variacion == null ? "—" : (d.variacion > 0 ? "+" : "") + d.variacion.toLocaleString("es-ES") + "%"}</td></tr>`).join("")}</tbody>`;
-    document.querySelectorAll("th").forEach((th) => (th.onclick = () => { dir = th.dataset.k === clave ? -dir : -1; clave = th.dataset.k; pintar(); }));
-  };
-  pintar();
-})();
+  <h2>De qué se habla</h2>
+  <div class="card"><svg id="g-temas" role="img" aria-label="Documentos por tema"></svg></div>
+  <p class="nota">Clasificación por palabras clave del título y del epígrafe. Una disposición puede caer en varios temas; los porcentajes no suman 100.</p>
+
+  <h2>El año, día a día</h2>
+  <div class="card"><svg id="g-dias" role="img" aria-label="Documentos publicados cada día de 2025"></svg></div>
+  <p class="nota" id="dias-nota"></p>
+
+  <h2>Busca en las 3.728 normas de rango general</h2>
+  <p style="margin:10px 0 12px">Leyes, reales decretos-ley, reales decretos, órdenes ministeriales, acuerdos y circulares. Los anuncios y las resoluciones de la Administración de Justicia están fuera de este buscador por volumen, pero cuentan en los gráficos de arriba.</p>
+  <p style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <input id="q" placeholder="Busca: alquiler, autónomos, vivienda, impuesto…" autocomplete="off">
+    <select id="tipo"><option value="">Todos los rangos</option></select>
+  </p>
+  <div class="card"><table id="t-normas"></table></div>
+  <p class="nota" id="nota-normas"></p>
+
+  <h2>Cómo leer esto sin equivocarse</h2>
+  <div class="card">
+    <p style="margin-top:0"><strong>El BOE no es solo leyes.</strong> Casi la mitad son anuncios (licitaciones, notificaciones, subastas) y una sexta parte es Administración de Justicia. Contar «documentos publicados» como si fueran normas nuevas exagera mucho lo que cambia.</p>
+    <p><strong>Una corrección de errores es un identificador nuevo.</strong> En 2025 hubo al menos 189: el BOE republica el texto corregido con otro número, así que no se pueden contar dos veces la misma norma.</p>
+    <p style="margin-bottom:0"><strong>El tipo se deduce del título.</strong> El sumario del BOE no trae el rango normativo de cada disposición, así que «real decreto» u «orden» se detectan leyendo el título. Funciona bien para las normas y deja un 27 % como «otro», casi todo anuncios de la sección IV con un topónimo por delante.</p>
+  </div>
+
+  <footer>
+    <p><strong>Fuente:</strong> Agencia Estatal Boletín Oficial del Estado, API de datos abiertos (<code>/datosabiertos/api/boe/sumario/{fecha}</code>), año 2025 completo. Reutilización permitida según el aviso legal de <a href="https://www.boe.es">boe.es</a>. Agregados y clasificación de elaboración propia; la AEBOE no participa ni avala esta reutilización.</p>
+    <p>Código y datos abiertos: <a href="https://github.com/pedri77/boe-radar">github.com/pedri77/boe-radar</a> · Serie <a href="https://iacedemy.com/free/yt/construido-con-ia/">«Construido con IA»</a> de IAcademy · <a href="https://iacedemy.com/kit-observatorio">Kit gratis para construir el tuyo</a></p>
+  </footer>
+</div>
+
+<script type="module">
+// Formato español sin depender de toLocaleString: el headless y algunos navegadores
+// vienen con ICU reducido y devolverían «3728» en vez de «3.728». Los miles se separan a mano.
+const N = (v, d = 0) => {
+  const n = Number(v ?? 0);
+  const [i, dec] = n.toFixed(d).split('.');
+  const mil = i.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return dec ? `${mil},${dec}` : mil;
+};
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const val = (x) => (x && typeof x === 'object' && 'valor' in x ? x.valor : x);
+
+const A = await (await fetch('data/boe_agregados.json')).json();
+const D = await (await fetch('data/boe_por_dia.json')).json();
+const NM = await (await fetch('data/boe_normas.json')).json();
+
+const v = A.volumen;
+$('#kpis').innerHTML = [
+  [N(val(v.disposiciones_y_anuncios)), 'documentos publicados en 2025'],
+  [N(val(v.media_por_dia), 1), 'de media cada día con boletín'],
+  [N(val(v.paginas_anio_aprox)), 'páginas en el año'],
+  [val(v.dia_record).disposiciones + ' el 10-05', 'el día récord (un sábado)'],
+].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+
+$('#sincl').textContent = `${N(A.sin_clasificar.valor)} documentos (${N(A.sin_clasificar.pct, 1)} %)`;
+
+// --- secciones
+const secc = A.por_seccion.map(([k, n]) => ({ k: k.replace(/^[IV]+\. |^T\.C\. /, ''), n }));
+const tot = secc.reduce((a, s) => a + s.n, 0);
+{
+  const W = 640, m = { t: 10, r: 74, b: 10, l: 250 }, h = (340 - m.t - m.b) / secc.length;
+  const max = Math.max(...secc.map((s) => s.n));
+  const el = $('#g-secciones'); el.setAttribute('viewBox', `0 0 ${W} 340`); el.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const add = (t, a, tx) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (tx != null) e.textContent = tx; el.appendChild(e); };
+  secc.forEach((s, i) => {
+    const y = m.t + i * h, w = (W - m.l - m.r) * s.n / max;
+    add('rect', { x: m.l, y: y + 2, width: Math.max(w, 1), height: h - 6, rx: 3, fill: 'var(--bar-hi)', 'fill-opacity': s.k.startsWith('I.') || s.k === 'Disposiciones generales' ? .95 : .5 });
+    add('text', { x: m.l - 8, y: y + h / 2 + 4, 'text-anchor': 'end', 'font-size': 12, fill: 'currentColor' }, s.k.length > 40 ? s.k.slice(0, 39) + '…' : s.k);
+    add('text', { x: m.l + w + 6, y: y + h / 2 + 4, 'font-size': 12, fill: 'var(--ink-2)' }, `${N(s.n)} · ${(100 * s.n / tot).toFixed(1)} %`);
+  });
+}
+$('#pctI').textContent = `${N(100 * (A.por_seccion.find((s) => s[0].startsWith('I.'))[1]) / tot, 1)} %`;
+
+// --- normas
+const tipos = A.por_tipo;
+const g = (t) => (tipos.find((x) => x[0] === t) || [t, 0])[1];
+const normasTotal = NM.normas.length;
+$('#normas-kpis').innerHTML = [
+  [N(normasTotal), 'normas de rango general'],
+  [N(100 * normasTotal / tot, 1) + ' %', 'del BOE del año'],
+  [N(g('ley')), 'leyes'],
+  [N(g('real decreto')), 'reales decretos'],
+].map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join('');
+$('#normas-nota').textContent = `Más ${N(g('orden'))} órdenes ministeriales, ${N(g('acuerdo'))} acuerdos y ${N(g('decreto-ley'))} reales decretos-ley. El resto del boletín son anuncios, resoluciones, oposiciones y actos de la Administración de Justicia.`;
+
+// --- temas
+const temas = A.por_tema.filter((t) => t[0] !== 'sin_clasificar').slice(0, 10);
+{
+  const W = 640, m = { t: 10, r: 74, b: 10, l: 200 }, h = (temas.length * 34 + 20 - m.t - m.b) / temas.length;
+  const max = Math.max(...temas.map((t) => t[1]));
+  const el = $('#g-temas'); el.setAttribute('viewBox', `0 0 ${W} ${temas.length * 34 + 20}`); el.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const add = (t, a, tx) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (tx != null) e.textContent = tx; el.appendChild(e); };
+  temas.forEach(([nombre, n], i) => {
+    const y = m.t + i * h, w = (W - m.l - m.r) * n / max;
+    add('rect', { x: m.l, y: y + 2, width: Math.max(w, 1), height: h - 6, rx: 3, fill: 'var(--bar)', 'fill-opacity': .8 });
+    add('text', { x: m.l - 8, y: y + h / 2 + 4, 'text-anchor': 'end', 'font-size': 12, fill: 'currentColor' }, nombre.replace(/_/g, ' '));
+    add('text', { x: m.l + w + 6, y: y + h / 2 + 4, 'font-size': 12, fill: 'var(--ink-2)' }, N(n));
+  });
+}
+
+// --- serie diaria
+const dias = D.dias;
+{
+  const W = 640, H = 260, m = { t: 16, r: 14, b: 34, l: 62 };
+  const max = Math.max(...dias.map((d) => d[1]));
+  const bw = (W - m.l - m.r) / dias.length;
+  const el = $('#g-dias'); el.setAttribute('viewBox', `0 0 ${W} ${H}`); el.innerHTML = '';
+  const NS = 'http://www.w3.org/2000/svg';
+  const add = (t, a, tx) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (tx != null) e.textContent = tx; el.appendChild(e); };
+  add('line', { x1: m.l, x2: W - m.r, y1: H - m.b, y2: H - m.b, stroke: 'var(--line)' });
+  dias.forEach(([f, n], i) => {
+    const h = (H - m.t - m.b) * n / max;
+    add('rect', { x: m.l + i * bw, y: H - m.b - h, width: Math.max(bw - 0.6, 0.7), height: h, fill: 'var(--bar-hi)', 'fill-opacity': n === max ? 1 : .62 });
+    if (i % 30 === 0) add('text', { x: m.l + i * bw, y: H - m.b + 16, 'text-anchor': 'middle', 'font-size': 10, fill: 'var(--ink-2)' }, f.slice(4, 6) + '/' + f.slice(6));
+  });
+  add('text', { x: m.l - 8, y: m.t + 8, 'text-anchor': 'end', 'font-size': 11, fill: 'var(--ink-2)' }, N(max));
+}
+const picos = [...dias].sort((a, b) => b[1] - a[1]).slice(0, 3).map((d) => `${d[0].slice(6)}/${d[0].slice(4, 6)} (${N(d[1])})`).join(', ');
+$('#dias-nota').textContent = `Cada barra es un día de 2025. Los 52 huecos son domingos y festivos sin boletín. Los tres días con más publicación: ${picos}.`;
+
+// --- buscador de normas
+// boe_normas.json viene compactado: cada norma es un array con las columnas de meta.columnas
+// (fecha, id, tipo, organo_i, titulo, epigrafe, tema_i, pag_ini, pag_fin) y dos diccionarios
+// de índices. La URL se deriva del identificador, que es estable.
+const ORDEN = { 'ley': 0, 'decreto-ley': 1, 'real decreto': 2, 'orden': 3, 'acuerdo': 4, 'circular': 5 };
+const URL = NM.meta.url || 'https://www.boe.es/diario_boe/txt.php?id={id}';
+const normas = NM.normas.map((f) => ({
+  fecha: f[0], id: f[1], tipo: f[2], departamento: NM.organos[f[3]], titulo: f[4],
+  epigrafe: f[5], tema: NM.temas[f[6]], pag_ini: f[7], pag_fin: f[8],
+}));
+const tiposSel = [...new Set(normas.map((n) => n.tipo))].sort((a, b) => (ORDEN[a] ?? 9) - (ORDEN[b] ?? 9));
+$('#tipo').innerHTML += tiposSel.map((t) => `<option value="${t}">${t}</option>`).join('');
+const norm = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+function pinta() {
+  const q = norm($('#q').value.trim());
+  const tp = $('#tipo').value;
+  const palabras = q.split(/\s+/).filter(Boolean);
+  let filas = normas.filter((n) => {
+    if (tp && n.tipo !== tp) return false;
+    if (!palabras.length) return true;
+    const h = norm(`${n.titulo} ${n.epigrafe} ${n.departamento}`);
+    return palabras.every((p) => h.includes(p));
+  });
+  const total = filas.length;
+  filas.sort((a, b) => b.fecha.localeCompare(a.fecha) || a.id.localeCompare(b.id));
+  const muestra = filas.slice(0, 60);
+  $('#t-normas').innerHTML = `<thead><tr><th>Fecha</th><th>Rango</th><th>Título</th><th>Órgano</th><th class="r">Págs.</th></tr></thead>`
+    + `<tbody>${muestra.map((n) => `<tr>
+        <td>${n.fecha.slice(6)}/${n.fecha.slice(4, 6)}</td>
+        <td><span class="pill ${n.tipo === 'ley' || n.tipo === 'decreto-ley' ? '' : 'muted'}">${n.tipo}</span></td>
+        <td><a href="${URL.replace('{id}', n.id)}" rel="noopener">${esc(n.titulo)}</a></td>
+        <td style="color:var(--ink-2)">${esc(n.departamento)}</td>
+        <td class="r">${n.pag_ini != null && n.pag_fin != null ? N(n.pag_fin - n.pag_ini + 1) : '—'}</td>
+      </tr>`).join('')}</tbody>`;
+  $('#nota-normas').textContent = total > 60
+    ? `${N(total)} normas coinciden; se muestran las 60 más recientes. Cada título enlaza al texto oficial en boe.es.`
+    : `${N(total)} normas coinciden. Cada título enlaza al texto oficial en boe.es.`;
+}
+$('#q').addEventListener('input', pinta);
+$('#tipo').addEventListener('change', pinta);
+pinta();
 </script>
 </body>
 </html>

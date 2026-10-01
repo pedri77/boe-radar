@@ -1,2 +1,10 @@
 __pycache__/
 .DS_Store
+
+# Crudos del BOE (54 MB de sumarios XML diarios): los repone `python3 scripts/boe_fetch.py`.
+raw/
+
+# Catálogo completo de las 75.405 disposiciones (39 MB). Se regenera con `boe_build.py`
+# a partir de raw/. Sí se versionan los agregados y el catálogo ligero de normas (~1,2 MB),
+# que es lo que sirve la web.
+data/boe_disposiciones.json

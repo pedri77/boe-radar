@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "source": "este fichero",
+    "period": "-",
+    "url": "-"
+  },
+  "fuentes": [
+    {
+      "nombre": "API datos abiertos BOE - sumario diario",
+      "url": "https://boe.es/datosabiertos/api/boe/sumario/{AAAAMMDD}",
+      "doc": "https://www.boe.es/datosabiertos/documentos/APIsumarioBOE.pdf",
+      "formato": "XML/JSON",
+      "uso": "descarga de sumarios",
+      "periodo": "2025"
+    },
+    {
+      "nombre": "Endpoint antiguo xml.php (disposiciones sueltas)",
+      "url": "https://www.boe.es/diario_boe/xml.php?id=BOE-A-<id>",
+      "nota": "funciona para BOE-A-*; para sumarios con id=BOE-S-<AAAAMMDD> devuelve 302 a errorParametros.php (medido)",
+      "periodo": "-"
+    },
+    {
+      "nombre": "Tablas auxiliares (departamentos, materias, rangos)",
+      "url": "https://www.boe.es/datosabiertos/definitions/download_schema.php?id=datos-auxiliares-departamentos",
+      "periodo": "-"
+    }
+  ]
+}
